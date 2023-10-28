@@ -1,0 +1,39 @@
+nohup: 忽略输入
+Downloading https://www.chrsmrrs.com/graphkerneldatasets/IMDB-BINARY.zip
+Extracting dataset/TUDataset/IMDB-BINARY/IMDB-BINARY.zip
+Processing...
+Done!
+Namespace(device='cuda:0', dataset='IMDB-BINARY', in_size=0, num_classes=2, fusion_type='early', gcn_channels=3, gcn_hidden=64, gcn_layers=4, gcn_dropout=0.1, trans_num_layers=4, input_node_dim=0, hidden_node_dim=32, input_edge_dim=0, hidden_edge_dim=32, ouput_dim=None, n_heads=4, max_in_degree=5, max_out_degree=5, max_path_distance=5, hidden_dim=64, num_layers=4, num_features=0, num_heads=8, dropout=0.1, pos_encoding='gcn', att_dropout=0.1, d_k=64, d_v=64, pos_embed_type='s', alpha=0.4, num_fusion_layers=4, folds=10, loss_log=1, lr=0.0001, weight_decay=1e-06, batch_size=128, epoches=500, output_dim=2)
+/home/dongrui/anaconda3/envs/dr/lib/python3.9/site-packages/torch/nn/init.py:412: UserWarning: Initializing zero-element tensors is a no-op
+  warnings.warn("Initializing zero-element tensors is a no-op")
+/home/dongrui/anaconda3/envs/dr/lib/python3.9/site-packages/torch_geometric/data/in_memory_dataset.py:284: UserWarning: It is not recommended to directly access the internal storage format `data` of an 'InMemoryDataset'. The given 'InMemoryDataset' only references a subset of examples of the full dataset, but 'data' will contain information of the full dataset. The data of the dataset is already cached, so any modifications to `data` will not be reflected when accessing its elements. Clearing the cache now by removing all elements in `dataset._data_list`. If you are absolutely certain what you are doing, access the internal storage via `InMemoryDataset._data` instead to suppress this warning. Alternatively, you can access stacked individual attributes of every graph via `dataset.{attr_name}`.
+  warnings.warn(msg)
+Fold: 0
+/home/dongrui/anaconda3/envs/dr/lib/python3.9/site-packages/torch/nn/init.py:412: UserWarning: Initializing zero-element tensors is a no-op
+  warnings.warn("Initializing zero-element tensors is a no-op")
+Traceback (most recent call last):
+  File "/home/dongrui/code/graph_self_fusion/train_test.py", line 232, in <module>
+    k_fold_train(args, model, dataset, folds=args.folds)
+  File "/home/dongrui/code/graph_self_fusion/train_test.py", line 170, in k_fold_train
+    max_acc, test_acc = train_model(args, model, optimizer, train_loader, val_loader, test_loader, fold)
+  File "/home/dongrui/code/graph_self_fusion/train_test.py", line 135, in train_model
+    output =  model(data)
+  File "/home/dongrui/anaconda3/envs/dr/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/dongrui/anaconda3/envs/dr/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/dongrui/code/graph_self_fusion/model/layers.py", line 441, in forward
+    x_ = self.pos_embedding(x, edge_index)
+  File "/home/dongrui/anaconda3/envs/dr/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/dongrui/anaconda3/envs/dr/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/dongrui/code/graph_self_fusion/model/graphTrans_layers.py", line 162, in forward
+    x = self.embedding(x)
+  File "/home/dongrui/anaconda3/envs/dr/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/dongrui/anaconda3/envs/dr/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/dongrui/anaconda3/envs/dr/lib/python3.9/site-packages/torch/nn/modules/linear.py", line 114, in forward
+    return F.linear(input, self.weight, self.bias)
+TypeError: linear(): argument 'input' (position 1) must be Tensor, not NoneType

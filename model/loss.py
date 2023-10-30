@@ -3,12 +3,11 @@ Description:
 Author: Rui Dong
 Date: 2023-10-27 18:49:02
 LastEditors: Please set LastEditors
-LastEditTime: 2023-10-27 20:43:27
+LastEditTime: 2023-10-28 10:51:07
 '''
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
 
 #TODO
 '''
@@ -25,5 +24,20 @@ class TripletContrastiveLoss(nn.Module):
         loss_gcn = F.cross_entropy(out_gcn, labels.view(-1))
         loss_trans = F.cross_entropy(out_trans, labels.view(-1))
         loss_fusion = F.cross_entropy(out_fusion, labels.view(-1))
+        loss_classification = loss_gcn * lam1 + loss_trans * lam2 + loss_fusion * lam3
         
+        z_gcn = F.normalize(out_gcn, dim=1)
+        z_trans = F.normalize(out_trans, dim=1)
+        z_fusion = F.normalize(out_fusion, dim=1)
+        
+        loss2 = torch.nn.MSELoss()
+        dist_gt = loss2(out_gcn, out_trans)
+        dist_ft = loss2(out_fusion, out_trans)
+        dist_fg = loss2(out_fusion, out_gcn)
+        theta1 = args.theta1    # gcn   <-> trans
+        theta2 = args.theta2    # trans <-> fusion
+        theta3 = args.theta3    # gcn   <-> fusion
+        loss_contrastive = dist_fg * theta3 + dist_ft * theta2 - dist_gt * theta1
+        
+        return loss_classification+loss_contrastive
         

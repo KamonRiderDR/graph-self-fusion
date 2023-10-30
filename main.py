@@ -2,8 +2,8 @@
 Description: BUG FROM HERE! (Maybe reconstruct later)
 Author: Rui Dong
 Date: 2023-10-25 20:28:11
-LastEditors: Rui Dong
-LastEditTime: 2023-10-26 14:18:46
+LastEditors: Please set LastEditors
+LastEditTime: 2023-10-28 11:24:46
 '''
 
 import os
@@ -28,7 +28,9 @@ sys.path.append(os.path.split(sys.path[0])[0])
 
 from model.backbone import GCN, SGCN
 from model.layers import MultiScaleGCN, GraphormerEncoder, GraphTransformer, GraphMixupFusion
+from model.graph_self_fusion import GraphSelfFusion
 
+config_dir = "/home/dongrui/config/"
 
 parser = argparse.ArgumentParser(description="uni-graph with multimodal self fusion")
 parser.add_argument('--device', type=str, default='cuda:0', help='specify cuda devices')
@@ -64,12 +66,25 @@ parser.add_argument('--att_dropout', type=float, default=0.1, help='multi-head a
 parser.add_argument('--d_k', type=int, default=64, help='dim of key matrix')
 parser.add_argument('--d_v', type=int, default=64, help='dim of value matrix')
 parser.add_argument('--pos_embed_type', type=str, default="s", help="type of positional embedding(s -> start m-> midd)")
-# mixup layer parameters
+# mixup layer && fusion model parameters
 parser.add_argument("--alpha", type=float, default=0.5, help="mix-up ratio")
 parser.add_argument("--num_fusion_layers", type=int, default=4, help="layers of the mix-up encoder")
+parser.add_argument("--eta", type=float, default=0.4, help="fusion pattern mix-ratio with residual pattern")
+# loss parameters
+parser.add_argument("--lam1", type=float, default=0.2, help="lam1 is for loss_gcn")
+parser.add_argument("--lam2", type=float, default=0.2, help="lam2 is for loss_trans")
+parser.add_argument("--theta1", type=float, default=0.3, help="theta1 is for loss_l2_gt")
+parser.add_argument("--theta2", type=float, default=0.4, help="theta2 is for loss_l2_ft")
+parser.add_argument("--theta3", type=float, default=0.4, help="theta3 is for loss_l2_fg")
 
 #* training config
 parser.add_argument("--loss_log", type=int, default=0, help="loss log ID")
+parser.add_argument('--folds', type=int, default=10, help='number of k-folds (default: 10)')
+parser.add_argument('--lr', type=float, default=0.0001, help='learning rate')
+parser.add_argument('--weight_decay', type=float, default=5e-4, help='weight decay')
+parser.add_argument('--batch_size', type=int, default=128, help='batch size')
+parser.add_argument('--epoches', type=int, default=500, help='maximum number of epochs')
+
 
 args = parser.parse_args()
 
@@ -132,6 +147,7 @@ if __name__ == '__main__':
     # model = GraphormerEncoder(args)
     # model = GraphTransformer(args)
     model = GraphMixupFusion(args)
+    
 
     # DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(args.device)

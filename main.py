@@ -3,13 +3,14 @@ Description: BUG FROM HERE! (Maybe reconstruct later)
 Author: Rui Dong
 Date: 2023-10-25 20:28:11
 LastEditors: Rui Dong
-LastEditTime: 2023-11-01 10:54:50
+LastEditTime: 2023-11-01 16:46:57
 '''
 
 import os
 import sys
 os.environ['CUDA_VISIBLE_DEVICES'] = '0,1,2,3'
 
+import copy
 import argparse
 import numpy as np
 import torch
@@ -96,10 +97,6 @@ args = parser.parse_args()
 TRAIN AND TEST FUNCTIONS.
 '''
 
-'''
-    @Below are training process
-'''
-
 def train_epoch(args, model, optimizer, train_loader):
     # criterion = torch.nn.CrossEntropyLoss() # define loss function
     criterion = TripletContrastiveLoss()
@@ -126,7 +123,7 @@ def test_epoch(args, model, test_loader):
     criterion = TripletContrastiveLoss()
     for data in test_loader:     
         data.to(args.device)                                # 批遍历测试集数据集
-        out_gcn, out_trans, out = model(data)                                   # 一次前向传播
+        out_gcn, out_trans, out = model(data)               # 一次前向传播
         pred = out.argmax(dim=1)                            # 使用概率最高的类别
         correct += int((pred == data.y).sum())              # 检查真实标签
         test_loss += criterion(args, out_gcn, out_trans, out, data.y).item() * out.shape[0]
@@ -168,10 +165,14 @@ def train_model(args, model, optimizer,
         print('Epoch: {:03d}'.format(epoch), 'train_loss: {:.6f}'.format(train_loss),
                 'val_loss: {:.6f}'.format(val_loss), 'val_acc: {:.6f}'.format(val_acc),
                 'test_loss: {:.6f}'.format(test_loss), 'test_acc: {:.6f}'.format(test_acc))
+        #   验证集效果最好的用在测试集上
         if val_acc > max_acc:
             max_acc = val_acc
+            best_weights = copy.deepcopy(model.state_dict())
     
-    return max_acc, np.mean(test_accs)
+    model.load_state_dict(best_weights)
+    test_acc, test_loss_ = test_epoch(args, model, test_loader)
+    return max_acc, test_loss_
 
 def k_fold_train(args, model, dataset, folds):
     val_accs = []
@@ -193,6 +194,7 @@ def k_fold_train(args, model, dataset, folds):
         val_accs.append(max_acc)
         test_accs.append(test_acc)
     
+    print(test_accs)
     print(            
         "[{:d} Fold results] data_val:{:.2f} ± {:.2f} data_test:{:.2f} ± {:.2f}".format(
         folds, 
@@ -205,14 +207,14 @@ def k_fold_train(args, model, dataset, folds):
 
 if __name__ == '__main__':
     dataset = TUDataset('dataset/TUDataset', name=args.dataset)
-    torch.manual_seed(777)
+    torch.manual_seed(2023)
     dataset = dataset.shuffle()
     train_size = int( 0.8 * len(dataset) )
-    test_size = len(dataset) - train_size
-    train_dataset, test_dataset = torch.utils.data.random_split(dataset, [train_size, test_size])
+    # test_size = len(dataset) - train_size
+    # train_dataset, test_dataset = torch.utils.data.random_split(dataset, [train_size, test_size])
     
-    train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True, num_workers=4)
-    test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False)
+    # train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True, num_workers=4)
+    # test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False)
     
     num_classes = dataset.num_classes
     in_size = dataset.num_features

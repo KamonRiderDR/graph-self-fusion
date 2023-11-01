@@ -2,8 +2,8 @@
  * @Description: 
  * @Author: Rui Dong
  * @Date: 2023-10-25 21:51:49
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-10-28 09:53:04
+ * @LastEditors: Rui Dong
+ * @LastEditTime: 2023-10-30 09:33:50
 -->
 
 
@@ -33,6 +33,10 @@ $\alpha$: [0.2, 0.4, 0.6, 0.8]
 
 
 `NCI1`
+0.4     76.33 ± 2.20\
+0.5     76.09 ± 2.32\
+0.6     76.78 ± 2.21\
+0.8     76.58 ± 2.43\
 
 
 `PTC_FR`

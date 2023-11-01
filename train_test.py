@@ -81,6 +81,10 @@ parser.add_argument('--epoches', type=int, default=500, help='maximum number of 
 args = parser.parse_args()
 
 
+'''
+    @Below are training process
+'''
+
 def train_epoch(args, model, optimizer, train_loader):
     criterion = torch.nn.CrossEntropyLoss() # define loss function
     model.train()

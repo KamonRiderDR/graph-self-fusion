@@ -2,8 +2,8 @@
 Description: 
 Author: Rui Dong
 Date: 2023-10-27 18:49:02
-LastEditors: Please set LastEditors
-LastEditTime: 2023-10-28 10:51:07
+LastEditors: Rui Dong
+LastEditTime: 2023-11-01 10:44:35
 '''
 import torch
 import torch.nn as nn
@@ -24,6 +24,7 @@ class TripletContrastiveLoss(nn.Module):
         loss_gcn = F.cross_entropy(out_gcn, labels.view(-1))
         loss_trans = F.cross_entropy(out_trans, labels.view(-1))
         loss_fusion = F.cross_entropy(out_fusion, labels.view(-1))
+        # is good enough?
         loss_classification = loss_gcn * lam1 + loss_trans * lam2 + loss_fusion * lam3
         
         z_gcn = F.normalize(out_gcn, dim=1)
@@ -39,5 +40,5 @@ class TripletContrastiveLoss(nn.Module):
         theta3 = args.theta3    # gcn   <-> fusion
         loss_contrastive = dist_fg * theta3 + dist_ft * theta2 - dist_gt * theta1
         
-        return loss_classification+loss_contrastive
+        return loss_contrastive + loss_classification
         

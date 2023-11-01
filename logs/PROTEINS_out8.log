@@ -1,0 +1,12 @@
+Namespace(device='cuda:3', dataset='PROTEINS', in_size=3, num_classes=2, fusion_type='early', gcn_channels=3, gcn_hidden=64, gcn_layers=4, gcn_dropout=0.1, trans_num_layers=4, input_node_dim=3, hidden_node_dim=32, input_edge_dim=0, hidden_edge_dim=32, ouput_dim=None, n_heads=4, max_in_degree=5, max_out_degree=5, max_path_distance=5, hidden_dim=64, num_layers=4, num_features=3, num_heads=8, dropout=0.1, pos_encoding='gcn', att_dropout=0.1, d_k=64, d_v=64, pos_embed_type='s', alpha=0.8, num_fusion_layers=4, folds=10, loss_log=3, lr=0.0001, weight_decay=1e-06, batch_size=128, epoches=500, output_dim=2)
+/home/dongrui/anaconda3/envs/dr/lib/python3.9/site-packages/torch_geometric/data/in_memory_dataset.py:284: UserWarning: It is not recommended to directly access the internal storage format `data` of an 'InMemoryDataset'. The given 'InMemoryDataset' only references a subset of examples of the full dataset, but 'data' will contain information of the full dataset. The data of the dataset is already cached, so any modifications to `data` will not be reflected when accessing its elements. Clearing the cache now by removing all elements in `dataset._data_list`. If you are absolutely certain what you are doing, access the internal storage via `InMemoryDataset._data` instead to suppress this warning. Alternatively, you can access stacked individual attributes of every graph via `dataset.{attr_name}`.
+  warnings.warn(msg)
+Fold: 0
+Epoch: 000 train_loss: 0.006472 val_loss: 0.656832 val_acc: 0.594595 test_loss: 0.669782 test_acc: 0.589286
+Epoch: 001 train_loss: 0.005206 val_loss: 0.660374 val_acc: 0.594595 test_loss: 0.677428 test_acc: 0.589286
+Epoch: 002 train_loss: 0.005068 val_loss: 0.637029 val_acc: 0.594595 test_loss: 0.645271 test_acc: 0.589286
+Epoch: 003 train_loss: 0.004954 val_loss: 0.634590 val_acc: 0.594595 test_loss: 0.643808 test_acc: 0.589286
+Epoch: 004 train_loss: 0.004929 val_loss: 0.635613 val_acc: 0.594595 test_loss: 0.649183 test_acc: 0.589286
+Epoch: 005 train_loss: 0.004902 val_loss: 0.617422 val_acc: 0.594595 test_loss: 0.630813 test_acc: 0.589286
+Epoch: 006 train_loss: 0.004774 val_loss: 0.610311 val_acc: 0.594595 test_loss: 0.627643 test_acc: 0.589286
+Epoch: 007 train_loss: 0.004775 val_loss: 0.582242 val_acc: 0.666667 test_loss: 0.610507 test_acc: 0.589286

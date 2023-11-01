@@ -2,8 +2,8 @@
 Description:  This is the interface for final model
 Author: Rui Dong
 Date: 2023-10-27 09:46:47
-LastEditors: Please set LastEditors
-LastEditTime: 2023-10-27 19:58:04
+LastEditors: Rui Dong
+LastEditTime: 2023-11-01 10:29:02
 '''
 
 import numpy as np
@@ -96,9 +96,20 @@ class GraphSelfFusion(nn.Module):
         self.trans_encoder1.reset_parameters()
         for encoder in self.encoders:
             encoder.reset_parameters()
-        self.fc_gcn.reset_parameters()
-        self.fc_trans.reset_parameters()
-        self.fc_fusion.reset_parameters()
+        # self.fc_gcn.reset_parameters()
+        # self.fc_trans.reset_parameters()
+        # self.fc_fusion.reset_parameters()
+        # Hard coding
+        self.fc_gcn[0].reset_parameters()
+        self.fc_trans[0].reset_parameters()
+        self.fc_fusion[0].reset_parameters()
+        self.fc_gcn[2].reset_parameters()
+        self.fc_trans[2].reset_parameters()
+        self.fc_fusion[2].reset_parameters()
+        self.fc_gcn[4].reset_parameters()
+        self.fc_trans[4].reset_parameters()
+        self.fc_fusion[4].reset_parameters()
+
 
     def fc_forward(self, x):
         x = F.relu(self.fc1(x))

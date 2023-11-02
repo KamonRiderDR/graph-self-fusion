@@ -3,7 +3,7 @@ Description: BUG FROM HERE! (Maybe reconstruct later)
 Author: Rui Dong
 Date: 2023-10-25 20:28:11
 LastEditors: Rui Dong
-LastEditTime: 2023-11-01 16:46:57
+LastEditTime: 2023-11-02 09:51:49
 '''
 
 import os
@@ -116,6 +116,13 @@ def train_epoch(args, model, optimizer, train_loader):
     # return train_loss / len(train_loader)
 
 # also for eval_epoch
+'''
+description: 
+param {*} args
+param {*} model
+param {*} test_loader
+return {*}      ACC && LOSS
+'''
 def test_epoch(args, model, test_loader):
     model.eval()
     correct = 0
@@ -133,7 +140,7 @@ def test_epoch(args, model, test_loader):
 '''
 @description:   train * epoches times [for each fold]
 @param: 
-@return:        records of the train, eval and test process
+@return:        best val-acc, best test-acc
 '''
 def train_model(args, model, optimizer, 
                 train_loader, val_loader, test_loader,
@@ -172,7 +179,7 @@ def train_model(args, model, optimizer,
     
     model.load_state_dict(best_weights)
     test_acc, test_loss_ = test_epoch(args, model, test_loader)
-    return max_acc, test_loss_
+    return max_acc, test_acc
 
 def k_fold_train(args, model, dataset, folds):
     val_accs = []
@@ -207,7 +214,7 @@ def k_fold_train(args, model, dataset, folds):
 
 if __name__ == '__main__':
     dataset = TUDataset('dataset/TUDataset', name=args.dataset)
-    torch.manual_seed(2023)
+    torch.manual_seed(777)
     dataset = dataset.shuffle()
     train_size = int( 0.8 * len(dataset) )
     # test_size = len(dataset) - train_size

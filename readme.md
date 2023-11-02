@@ -3,7 +3,7 @@
  * @Author: Rui Dong
  * @Date: 2023-10-07 19:45:01
  * @LastEditors: Rui Dong
- * @LastEditTime: 2023-10-19 21:48:40
+ * @LastEditTime: 2023-11-02 10:01:06
 -->
 
 ## Description
@@ -18,4 +18,3 @@ This is the code for self graph fusion.
 - 搭建框架，代码结构优化跑对比实验等 （如果一切顺利的话）
 
 ## Record
-graphormer 考虑换成graphTrans或者直接在ljx的代码基础上魔改，总之越简单越好

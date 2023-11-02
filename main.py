@@ -3,7 +3,7 @@ Description: BUG FROM HERE! (Maybe reconstruct later)
 Author: Rui Dong
 Date: 2023-10-25 20:28:11
 LastEditors: Rui Dong
-LastEditTime: 2023-11-02 09:51:49
+LastEditTime: 2023-11-02 18:03:53
 '''
 
 import os
@@ -63,7 +63,7 @@ parser.add_argument("--max_path_distance", type=int, default=5, help="max path d
 #  graphTrans parameters
 parser.add_argument("--hidden_dim", type=int, default=64, help="hidden dim of graphTrans")
 parser.add_argument("--num_layers", type=int, default=4, help="number of graphTrans layers")
-parser.add_argument("--num_features", type=int)
+parser.add_argument("--num_features", type=int) # same as in_size
 parser.add_argument("--num_heads", type=int, default=8, help="number of heads of graphTrans")
 parser.add_argument('--dropout', type=float, default=0.1, help='dropout ratio')
 parser.add_argument("--pos_encoding", choices=[None, 'gcn', 'gin'], default='gcn')
@@ -138,7 +138,7 @@ def test_epoch(args, model, test_loader):
 
 
 '''
-@description:   train * epoches times [for each fold]
+@description:   train * epoches times [in one fold]
 @param: 
 @return:        best val-acc, best test-acc
 '''

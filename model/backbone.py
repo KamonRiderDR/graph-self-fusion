@@ -1,13 +1,11 @@
 '''
 Description: This .py file defines backbone of the model.
 Including:  TODO
-        1.  two encoders for gcn and transformers seperately.
-        2.  Fusion layer
         
 Author: Rui Dong
 Date: 2023-10-09 12:39:58
 LastEditors: Rui Dong
-LastEditTime: 2023-10-18 21:21:04
+LastEditTime: 2023-11-02 15:54:43
 '''
 
 

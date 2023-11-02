@@ -3,7 +3,7 @@ Description:  This is the interface for final model
 Author: Rui Dong
 Date: 2023-10-27 09:46:47
 LastEditors: Rui Dong
-LastEditTime: 2023-11-01 10:29:02
+LastEditTime: 2023-11-02 14:54:06
 '''
 
 import numpy as np
@@ -36,7 +36,7 @@ class GraphSelfFusion(nn.Module):
         self.gcn_channels   = args.gcn_channels
         self.num_features   = args.in_size
         self.hidden_dim     = args.gcn_hidden
-        self.num_layers     = args.gcn_layers
+        self.num_layers     = args.num_fusion_layers
         self.num_classes    = args.num_classes
         self.dropout        = args.gcn_dropout
         self.device         = args.device
@@ -96,9 +96,6 @@ class GraphSelfFusion(nn.Module):
         self.trans_encoder1.reset_parameters()
         for encoder in self.encoders:
             encoder.reset_parameters()
-        # self.fc_gcn.reset_parameters()
-        # self.fc_trans.reset_parameters()
-        # self.fc_fusion.reset_parameters()
         # Hard coding
         self.fc_gcn[0].reset_parameters()
         self.fc_trans[0].reset_parameters()

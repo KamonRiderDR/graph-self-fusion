@@ -6,8 +6,8 @@ INCLUDING:
         3. 	Multi-modal fusion layer
 Author: Rui Dong
 Date: 2023-10-10 08:55:26
-LastEditors: Please set LastEditors
-LastEditTime: 2023-10-27 20:43:47
+LastEditors: Rui Dong
+LastEditTime: 2023-11-03 15:38:46
 '''
 
 import numpy as np
@@ -315,6 +315,18 @@ class SelfMultiFusionLayer(nn.Module):
         x_fusion = torch.add(x_gcn_mix, x_trans_mix)
 
         return x_gcn, x_trans, x_fusion
+
+
+'''
+    Late fusion, use one transformer layer to FUSION.
+    input:      gcn, trans, fusion
+    return:     gcn, trans, fusion(later)
+'''
+class SelfFusionTransformerLayer(nn.TransformerEncoderLayer):
+    def __intit__(self, args):
+        super(SelfFusionTransformerLayer, self).__init__()
+    
+
 
 
 '''

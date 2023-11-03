@@ -3,7 +3,7 @@ Description: BUG FROM HERE! (Maybe reconstruct later)
 Author: Rui Dong
 Date: 2023-10-25 20:28:11
 LastEditors: Rui Dong
-LastEditTime: 2023-11-02 18:03:53
+LastEditTime: 2023-11-03 11:03:59
 '''
 
 import os
@@ -169,7 +169,8 @@ def train_model(args, model, optimizer,
         val_acc, val_loss = test_epoch(args, model, val_loader)
         test_acc, test_loss = test_epoch(args, model, test_loader)
         test_accs.append(test_acc)
-        print('Epoch: {:03d}'.format(epoch), 'train_loss: {:.6f}'.format(train_loss),
+        if epoch % 10 == 0:
+            print('Epoch: {:03d}'.format(epoch), 'train_loss: {:.6f}'.format(train_loss),
                 'val_loss: {:.6f}'.format(val_loss), 'val_acc: {:.6f}'.format(val_acc),
                 'test_loss: {:.6f}'.format(test_loss), 'test_acc: {:.6f}'.format(test_acc))
         #   验证集效果最好的用在测试集上

@@ -1,4 +1,4 @@
-Dataset="NCI1"
+Dataset="PTC_FR"
 
 nohup python -u main.py  --device cuda:0 --alpha 0.5 --dataset ${Dataset} --loss_log 0 > logs/${Dataset}_out5.log  2>&1 &
 nohup python -u main.py  --device cuda:1 --alpha 0.4 --dataset ${Dataset} --loss_log 1 > logs/${Dataset}_out4.log  2>&1 &

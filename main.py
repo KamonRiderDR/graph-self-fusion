@@ -3,7 +3,7 @@ Description: BUG FROM HERE! (Maybe reconstruct later)
 Author: Rui Dong
 Date: 2023-10-25 20:28:11
 LastEditors: Rui Dong
-LastEditTime: 2023-11-03 11:03:59
+LastEditTime: 2023-11-04 21:05:56
 '''
 
 import os
@@ -18,7 +18,7 @@ import torch.nn.functional as F
 import torch.nn as nn
 from torch_geometric.nn import global_mean_pool, global_max_pool, global_add_pool
 from torch_geometric.nn import GCNConv, SAGEConv, GATConv
-from torch_geometric.datasets import TUDataset
+# from torch_geometric.datasets import TUDataset
 from torch_geometric.loader import DataLoader
 
 par_dir = os.path.dirname(os.path.abspath(__file__)) 
@@ -32,7 +32,7 @@ from model.layers import MultiScaleGCN, GraphormerEncoder, GraphTransformer, Gra
 from model.graph_self_fusion import GraphSelfFusion
 from model.loss import TripletContrastiveLoss 
 from utils.utils import k_fold
-
+from utils.dataset import TUDataset # Only for IMDB-only
 
 config_dir = "/home/dongrui/config/"
 
@@ -140,17 +140,18 @@ def test_epoch(args, model, test_loader):
 '''
 @description:   train * epoches times [in one fold]
 @param: 
-@return:        best val-acc, best test-acc
+@return:        best val-acc, best test-acc(during training process), best test-acc
 '''
 def train_model(args, model, optimizer, 
                 train_loader, val_loader, test_loader,
                 i_fold):
     min_loss = 1e10
-    max_acc = 0.00
+    best_val_acc = 0.00
     best_epoch = 0
     # criterion = torch.nn.CrossEntropyLoss() # define loss function
     criterion = TripletContrastiveLoss()
     test_accs = []
+    best_test_acc = 0.
     
     for epoch in range(args.epoches):
         model.train()
@@ -169,21 +170,23 @@ def train_model(args, model, optimizer,
         val_acc, val_loss = test_epoch(args, model, val_loader)
         test_acc, test_loss = test_epoch(args, model, test_loader)
         test_accs.append(test_acc)
+        best_test_acc = max(best_test_acc, test_acc)
         if epoch % 10 == 0:
             print('Epoch: {:03d}'.format(epoch), 'train_loss: {:.6f}'.format(train_loss),
                 'val_loss: {:.6f}'.format(val_loss), 'val_acc: {:.6f}'.format(val_acc),
                 'test_loss: {:.6f}'.format(test_loss), 'test_acc: {:.6f}'.format(test_acc))
         #   验证集效果最好的用在测试集上
-        if val_acc > max_acc:
-            max_acc = val_acc
+        if val_acc > best_val_acc:
+            best_val_acc = val_acc
             best_weights = copy.deepcopy(model.state_dict())
     
     model.load_state_dict(best_weights)
     test_acc, test_loss_ = test_epoch(args, model, test_loader)
-    return max_acc, test_acc
+    return best_val_acc, best_test_acc, test_acc
 
 def k_fold_train(args, model, dataset, folds):
     val_accs = []
+    best_tests = []
     test_accs = []
     for fold, (train_idx, test_idx, val_idx) in enumerate(zip(*k_fold(dataset, folds))):
         print('Fold: {:1d}'.format(fold))
@@ -198,16 +201,19 @@ def k_fold_train(args, model, dataset, folds):
         
         optimizer = torch.optim.Adam(model.parameters(), lr = args.lr, weight_decay=args.weight_decay)
         
-        max_acc, test_acc = train_model(args, model, optimizer, train_loader, val_loader, test_loader, fold)
-        val_accs.append(max_acc)
+        best_val_acc, max_test_acc, test_acc = train_model(args, model, optimizer, train_loader, val_loader, test_loader, fold)
+        val_accs.append(best_val_acc)
         test_accs.append(test_acc)
+        best_tests.append(max_test_acc)
     
+    print(best_tests)
     print(test_accs)
     print(            
-        "[{:d} Fold results] data_val:{:.2f} ± {:.2f} data_test:{:.2f} ± {:.2f}".format(
+        "[{:d} Fold results] data_val:{:.2f} ± {:.2f} data_test:{:.2f} ± {:.2f} best_test:{:.2f} ± {:.2f}".format(
         folds, 
         np.mean(val_accs) * 100, np.std(val_accs) * 100,
-        np.mean(test_accs) * 100, np.std(test_accs) * 100)
+        np.mean(test_accs) * 100, np.std(test_accs) * 100,
+        np.mean(best_tests) * 100, np.std(best_tests) * 100)
         )
     
         

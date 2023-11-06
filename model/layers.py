@@ -318,7 +318,7 @@ class SelfMultiFusionLayer(nn.Module):
 
 
 '''
-    Late fusion, use one transformer layer to FUSION.
+    TODO Late fusion, use one transformer layer to FUSION.
     input:      gcn, trans, fusion
     return:     gcn, trans, fusion(later)
 '''

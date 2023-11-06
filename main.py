@@ -3,7 +3,7 @@ Description: BUG FROM HERE! (Maybe reconstruct later)
 Author: Rui Dong
 Date: 2023-10-25 20:28:11
 LastEditors: Rui Dong
-LastEditTime: 2023-11-04 21:05:56
+LastEditTime: 2023-11-05 18:17:55
 '''
 
 import os
@@ -74,7 +74,7 @@ parser.add_argument('--pos_embed_type', type=str, default="s", help="type of pos
 # mixup layer && fusion model parameters
 parser.add_argument("--alpha", type=float, default=0.5, help="mix-up ratio")
 parser.add_argument("--num_fusion_layers", type=int, default=4, help="layers of the mix-up encoder")
-parser.add_argument("--eta", type=float, default=0.4, help="fusion pattern mix-ratio with residual pattern")
+parser.add_argument("--eta", type=float, default=0.5, help="fusion pattern mix-ratio with residual pattern")
 # loss parameters
 parser.add_argument("--lam1", type=float, default=0.2, help="lam1 is for loss_gcn")
 parser.add_argument("--lam2", type=float, default=0.2, help="lam2 is for loss_trans")
@@ -205,6 +205,11 @@ def k_fold_train(args, model, dataset, folds):
         val_accs.append(best_val_acc)
         test_accs.append(test_acc)
         best_tests.append(max_test_acc)
+        print("------------- {:d} val_acc: {:.4f} test_acc: {:.4f} best_test: {:.4f} -----------------".format(
+            fold, 
+            best_val_acc, test_acc, max_test_acc
+        ))
+        torch.cuda.empty_cache()
     
     print(best_tests)
     print(test_accs)
@@ -221,7 +226,7 @@ def k_fold_train(args, model, dataset, folds):
 
 if __name__ == '__main__':
     dataset = TUDataset('dataset/TUDataset', name=args.dataset)
-    torch.manual_seed(777)
+    torch.manual_seed(2023)
     dataset = dataset.shuffle()
     train_size = int( 0.8 * len(dataset) )
     # test_size = len(dataset) - train_size

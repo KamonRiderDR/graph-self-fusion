@@ -1,0 +1,75 @@
+/home/dongrui/anaconda3/envs/dr/lib/python3.9/site-packages/torch_geometric/data/in_memory_dataset.py:284: UserWarning: It is not recommended to directly access the internal storage format `data` of an 'InMemoryDataset'. If you are absolutely certain what you are doing, access the internal storage via `InMemoryDataset._data` instead to suppress this warning. Alternatively, you can access stacked individual attributes of every graph via `dataset.{attr_name}`.
+  warnings.warn(msg)
+Namespace(device='cuda:1', dataset='PROTEINS', in_size=3, num_classes=2, fusion_type='early', gcn_channels=3, gcn_hidden=128, gcn_layers=4, gcn_dropout=0.1, trans_num_layers=4, input_node_dim=3, hidden_node_dim=32, input_edge_dim=0, hidden_edge_dim=32, ouput_dim=None, n_heads=4, max_in_degree=5, max_out_degree=5, max_path_distance=5, hidden_dim=128, num_layers=4, num_features=3, num_heads=8, dropout=0.1, pos_encoding='gcn', att_dropout=0.1, d_k=64, d_v=64, pos_embed_type='s', alpha=0.4, num_fusion_layers=6, eta=0.5, lam1=0.2, lam2=0.2, theta1=0.1, theta2=0.4, theta3=0.4, loss_log=2, folds=10, lr=0.0001, weight_decay=0.0005, batch_size=64, epoches=800, output_dim=2)
+/home/dongrui/anaconda3/envs/dr/lib/python3.9/site-packages/torch_geometric/data/in_memory_dataset.py:284: UserWarning: It is not recommended to directly access the internal storage format `data` of an 'InMemoryDataset'. The given 'InMemoryDataset' only references a subset of examples of the full dataset, but 'data' will contain information of the full dataset. The data of the dataset is already cached, so any modifications to `data` will not be reflected when accessing its elements. Clearing the cache now by removing all elements in `dataset._data_list`. If you are absolutely certain what you are doing, access the internal storage via `InMemoryDataset._data` instead to suppress this warning. Alternatively, you can access stacked individual attributes of every graph via `dataset.{attr_name}`.
+  warnings.warn(msg)
+Fold: 0
+Epoch: 000 train_loss: 0.017192 val_loss: 0.662586 val_acc: 0.648649 test_loss: 0.824864 test_acc: 0.535714
+Epoch: 010 train_loss: 0.009837 val_loss: 0.596409 val_acc: 0.648649 test_loss: 0.677929 test_acc: 0.535714
+Epoch: 020 train_loss: 0.009475 val_loss: 0.572416 val_acc: 0.657658 test_loss: 0.612975 test_acc: 0.562500
+Epoch: 030 train_loss: 0.009590 val_loss: 0.582432 val_acc: 0.648649 test_loss: 0.643557 test_acc: 0.616071
+Epoch: 040 train_loss: 0.009372 val_loss: 0.571008 val_acc: 0.684685 test_loss: 0.622571 test_acc: 0.651786
+Epoch: 050 train_loss: 0.009489 val_loss: 0.573300 val_acc: 0.711712 test_loss: 0.634906 test_acc: 0.705357
+Epoch: 060 train_loss: 0.009330 val_loss: 0.588417 val_acc: 0.720721 test_loss: 0.658675 test_acc: 0.687500
+Epoch: 070 train_loss: 0.009834 val_loss: 0.612897 val_acc: 0.702703 test_loss: 0.770233 test_acc: 0.714286
+Epoch: 080 train_loss: 0.009257 val_loss: 0.572246 val_acc: 0.702703 test_loss: 0.622576 test_acc: 0.687500
+Epoch: 090 train_loss: 0.009151 val_loss: 0.581499 val_acc: 0.738739 test_loss: 0.667568 test_acc: 0.714286
+Epoch: 100 train_loss: 0.009202 val_loss: 0.571240 val_acc: 0.756757 test_loss: 0.615576 test_acc: 0.687500
+Epoch: 110 train_loss: 0.009138 val_loss: 0.572194 val_acc: 0.729730 test_loss: 0.605119 test_acc: 0.705357
+Epoch: 120 train_loss: 0.009144 val_loss: 0.569299 val_acc: 0.720721 test_loss: 0.608596 test_acc: 0.714286
+Epoch: 130 train_loss: 0.009010 val_loss: 0.570677 val_acc: 0.729730 test_loss: 0.587127 test_acc: 0.723214
+Epoch: 140 train_loss: 0.009039 val_loss: 0.581707 val_acc: 0.765766 test_loss: 0.670798 test_acc: 0.705357
+Epoch: 150 train_loss: 0.009047 val_loss: 0.577919 val_acc: 0.756757 test_loss: 0.599934 test_acc: 0.714286
+Epoch: 160 train_loss: 0.009227 val_loss: 0.593098 val_acc: 0.774775 test_loss: 0.683201 test_acc: 0.723214
+Epoch: 170 train_loss: 0.008916 val_loss: 0.570879 val_acc: 0.774775 test_loss: 0.605945 test_acc: 0.741071
+Epoch: 180 train_loss: 0.008871 val_loss: 0.569449 val_acc: 0.756757 test_loss: 0.585298 test_acc: 0.732143
+Epoch: 190 train_loss: 0.008980 val_loss: 0.590238 val_acc: 0.756757 test_loss: 0.652023 test_acc: 0.758929
+Epoch: 200 train_loss: 0.008928 val_loss: 0.569116 val_acc: 0.765766 test_loss: 0.580150 test_acc: 0.723214
+Epoch: 210 train_loss: 0.008817 val_loss: 0.581981 val_acc: 0.774775 test_loss: 0.613053 test_acc: 0.767857
+Epoch: 220 train_loss: 0.009019 val_loss: 0.563641 val_acc: 0.783784 test_loss: 0.598964 test_acc: 0.758929
+Epoch: 230 train_loss: 0.008976 val_loss: 0.570079 val_acc: 0.792793 test_loss: 0.571495 test_acc: 0.750000
+Epoch: 240 train_loss: 0.008858 val_loss: 0.570044 val_acc: 0.783784 test_loss: 0.585485 test_acc: 0.758929
+Epoch: 250 train_loss: 0.008808 val_loss: 0.587283 val_acc: 0.792793 test_loss: 0.612120 test_acc: 0.741071
+Epoch: 260 train_loss: 0.008703 val_loss: 0.576428 val_acc: 0.774775 test_loss: 0.599627 test_acc: 0.776786
+Epoch: 270 train_loss: 0.008802 val_loss: 0.567999 val_acc: 0.801802 test_loss: 0.573188 test_acc: 0.776786
+Epoch: 280 train_loss: 0.008723 val_loss: 0.566370 val_acc: 0.774775 test_loss: 0.599813 test_acc: 0.732143
+Epoch: 290 train_loss: 0.008792 val_loss: 0.576398 val_acc: 0.765766 test_loss: 0.574064 test_acc: 0.758929
+Epoch: 300 train_loss: 0.008605 val_loss: 0.588723 val_acc: 0.765766 test_loss: 0.569371 test_acc: 0.750000
+Epoch: 310 train_loss: 0.008680 val_loss: 0.588813 val_acc: 0.756757 test_loss: 0.593320 test_acc: 0.750000
+Epoch: 320 train_loss: 0.008586 val_loss: 0.610803 val_acc: 0.756757 test_loss: 0.576692 test_acc: 0.741071
+Epoch: 330 train_loss: 0.008667 val_loss: 0.577226 val_acc: 0.774775 test_loss: 0.564333 test_acc: 0.732143
+Epoch: 340 train_loss: 0.008599 val_loss: 0.575974 val_acc: 0.765766 test_loss: 0.574696 test_acc: 0.705357
+Epoch: 350 train_loss: 0.008481 val_loss: 0.587099 val_acc: 0.774775 test_loss: 0.565248 test_acc: 0.741071
+Epoch: 360 train_loss: 0.008577 val_loss: 0.581830 val_acc: 0.765766 test_loss: 0.567805 test_acc: 0.741071
+Epoch: 370 train_loss: 0.008591 val_loss: 0.561892 val_acc: 0.792793 test_loss: 0.563105 test_acc: 0.714286
+Epoch: 380 train_loss: 0.008362 val_loss: 0.592088 val_acc: 0.765766 test_loss: 0.566103 test_acc: 0.741071
+Epoch: 390 train_loss: 0.008426 val_loss: 0.593955 val_acc: 0.738739 test_loss: 0.586934 test_acc: 0.741071
+Epoch: 400 train_loss: 0.008375 val_loss: 0.593326 val_acc: 0.738739 test_loss: 0.564269 test_acc: 0.723214
+Epoch: 410 train_loss: 0.008555 val_loss: 0.574488 val_acc: 0.765766 test_loss: 0.612930 test_acc: 0.732143
+Epoch: 420 train_loss: 0.008326 val_loss: 0.601660 val_acc: 0.738739 test_loss: 0.570820 test_acc: 0.723214
+Epoch: 430 train_loss: 0.008340 val_loss: 0.588353 val_acc: 0.765766 test_loss: 0.559742 test_acc: 0.723214
+Epoch: 440 train_loss: 0.008344 val_loss: 0.563989 val_acc: 0.792793 test_loss: 0.556620 test_acc: 0.741071
+Epoch: 450 train_loss: 0.008199 val_loss: 0.585047 val_acc: 0.756757 test_loss: 0.564451 test_acc: 0.714286
+Epoch: 460 train_loss: 0.008168 val_loss: 0.601829 val_acc: 0.738739 test_loss: 0.561880 test_acc: 0.723214
+Epoch: 470 train_loss: 0.008229 val_loss: 0.586667 val_acc: 0.765766 test_loss: 0.565621 test_acc: 0.732143
+Epoch: 480 train_loss: 0.008249 val_loss: 0.594907 val_acc: 0.783784 test_loss: 0.570699 test_acc: 0.732143
+Epoch: 490 train_loss: 0.008257 val_loss: 0.590357 val_acc: 0.774775 test_loss: 0.559187 test_acc: 0.750000
+Epoch: 500 train_loss: 0.008107 val_loss: 0.596327 val_acc: 0.756757 test_loss: 0.636756 test_acc: 0.732143
+Epoch: 510 train_loss: 0.008152 val_loss: 0.601904 val_acc: 0.747748 test_loss: 0.563981 test_acc: 0.741071
+Epoch: 520 train_loss: 0.008152 val_loss: 0.600882 val_acc: 0.747748 test_loss: 0.628976 test_acc: 0.732143
+Epoch: 530 train_loss: 0.008045 val_loss: 0.632642 val_acc: 0.729730 test_loss: 0.559397 test_acc: 0.741071
+Epoch: 540 train_loss: 0.007997 val_loss: 0.595729 val_acc: 0.729730 test_loss: 0.570039 test_acc: 0.723214
+Epoch: 550 train_loss: 0.007979 val_loss: 0.587460 val_acc: 0.747748 test_loss: 0.593536 test_acc: 0.705357
+Epoch: 560 train_loss: 0.007998 val_loss: 0.589321 val_acc: 0.756757 test_loss: 0.622935 test_acc: 0.714286
+Epoch: 570 train_loss: 0.008055 val_loss: 0.579609 val_acc: 0.747748 test_loss: 0.587019 test_acc: 0.732143
+Epoch: 580 train_loss: 0.007952 val_loss: 0.604213 val_acc: 0.756757 test_loss: 0.565422 test_acc: 0.732143
+Epoch: 590 train_loss: 0.007938 val_loss: 0.587501 val_acc: 0.738739 test_loss: 0.615710 test_acc: 0.714286
+Epoch: 600 train_loss: 0.007918 val_loss: 0.575895 val_acc: 0.756757 test_loss: 0.565442 test_acc: 0.705357
+Epoch: 610 train_loss: 0.007994 val_loss: 0.572809 val_acc: 0.774775 test_loss: 0.563297 test_acc: 0.705357
+Epoch: 620 train_loss: 0.007852 val_loss: 0.567574 val_acc: 0.774775 test_loss: 0.591937 test_acc: 0.732143
+Epoch: 630 train_loss: 0.007908 val_loss: 0.596352 val_acc: 0.738739 test_loss: 0.582581 test_acc: 0.705357
+Epoch: 640 train_loss: 0.007884 val_loss: 0.581679 val_acc: 0.756757 test_loss: 0.565703 test_acc: 0.714286
+Epoch: 650 train_loss: 0.007670 val_loss: 0.574595 val_acc: 0.765766 test_loss: 0.584185 test_acc: 0.714286
+Epoch: 660 train_loss: 0.007677 val_loss: 0.597116 val_acc: 0.765766 test_loss: 0.602173 test_acc: 0.705357
+Epoch: 670 train_loss: 0.008105 val_loss: 0.575594 val_acc: 0.774775 test_loss: 0.627627 test_acc: 0.723214
+Epoch: 680 train_loss: 0.007688 val_loss: 0.567429 val_acc: 0.765766 test_loss: 0.599138 test_acc: 0.732143

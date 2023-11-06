@@ -3,7 +3,7 @@ Description:  This is the interface for final model
 Author: Rui Dong
 Date: 2023-10-27 09:46:47
 LastEditors: Rui Dong
-LastEditTime: 2023-11-06 22:09:25
+LastEditTime: 2023-11-06 21:15:59
 '''
 
 import numpy as np
@@ -65,10 +65,6 @@ class GraphSelfFusion(nn.Module):
                 self.device
         )
         self.trans_encoder1 = TransformerEncoder(self.args)
-        self.fusion_transformer_encoder1 = SelfFusionTransformerLayer(
-            self.hidden_dim, self.num_heads, self.ffn_dim, self.dropout 
-        )
-        
         self.encoders = torch.nn.ModuleList()
         self.fusion_transformer_layers = nn.ModuleList()
         for i in range(self.num_layers-1):
@@ -134,42 +130,19 @@ class GraphSelfFusion(nn.Module):
         x_ = self.pos_embedding(x, edge_index)
         batch_x, mask = to_dense_batch(x_, batch)
         adj = to_dense_adj(edge_index, batch)
-
+        # here, tensor.shape 2 -> 3
         x_gcn = self.gcn_encoder1(x, edge_index)
         x_trans = self.trans_encoder1(batch_x, mask=mask, att_bias=adj)
-        #* fusion1: transformer fusion
-        #* fusion2: mixup
         x_trans = x_trans[mask]
         x_gcn_mix = x_gcn * self.alpha
         x_trans_mix = x_trans * (1.00 - self.alpha)
+        # 3* input and 3* output
         x_mix = torch.add(x_gcn_mix, x_trans_mix)
-        
-        batch_mix, mask_mix = to_dense_batch(x_mix, batch) 
-        batch_gcn, mask_gcn = to_dense_batch(x_gcn, batch)
-        batch_trans, mask_trans = to_dense_batch(x_trans, batch)
-        x_gcn, x_trans, x_mix = self.fusion_transformer_encoder1(batch_gcn, batch_trans, batch_mix)
-        x_gcn = x_gcn[mask_gcn]
-        x_trans = x_trans[mask_trans]
-        x_mix = x_mix[mask_mix]
 
-        # for encoder in self.encoders:
-        #     residual_mix = x_mix
-        #     x_gcn, x_trans, x_mix = encoder(x_gcn, x_trans, x_mix, edge_index, batch) # TODO
-        #     x_mix = torch.add(x_mix * self.eta,  residual_mix * (1.00-self.eta) )         
-        for i in range(len(self.encoders)):
-            #* fusion1: transformer block
-            batch_mix, mask_mix = to_dense_batch(x_mix, batch) 
-            batch_gcn, mask_gcn = to_dense_batch(x_gcn, batch)
-            batch_trans, mask_trans = to_dense_batch(x_trans, batch)
-            x_gcn, x_trans, x_mix = self.fusion_transformer_layers[i](batch_gcn, batch_trans, batch_mix)
-            x_gcn = x_gcn[mask_gcn]
-            x_trans = x_trans[mask_trans]
-            x_mix = x_mix[mask_mix]
-            #* fusion2: mix-up
-            residual_mix = x_mix
-            x_gcn, x_trans, x_mix = self.encoders[i](x_gcn, x_trans, x_mix, edge_index, batch) # TODO
-            x_mix = torch.add(x_mix * self.eta,  residual_mix * (1.00-self.eta) ) 
-
+        for encoder in self.encoders:
+            res_mix = x_mix
+            x_gcn, x_trans, x_mix = encoder(x_gcn, x_trans, x_mix, edge_index, batch) # TODO
+            x_mix = torch.add(x_mix * self.eta,  res_mix * (1.00-self.eta) ) 
         
         # output head
         x_gcn = global_add_pool(x_gcn, batch)

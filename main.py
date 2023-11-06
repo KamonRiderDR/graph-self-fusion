@@ -3,7 +3,7 @@ Description: BUG FROM HERE! (Maybe reconstruct later)
 Author: Rui Dong
 Date: 2023-10-25 20:28:11
 LastEditors: Rui Dong
-LastEditTime: 2023-11-05 18:17:55
+LastEditTime: 2023-11-06 21:30:55
 '''
 
 import os
@@ -75,6 +75,7 @@ parser.add_argument('--pos_embed_type', type=str, default="s", help="type of pos
 parser.add_argument("--alpha", type=float, default=0.5, help="mix-up ratio")
 parser.add_argument("--num_fusion_layers", type=int, default=4, help="layers of the mix-up encoder")
 parser.add_argument("--eta", type=float, default=0.5, help="fusion pattern mix-ratio with residual pattern")
+parser.add_argument("--ffn_dim", type=int, default=256, help="fusion FFN dim")
 # loss parameters
 parser.add_argument("--lam1", type=float, default=0.2, help="lam1 is for loss_gcn")
 parser.add_argument("--lam2", type=float, default=0.2, help="lam2 is for loss_trans")
@@ -171,10 +172,14 @@ def train_model(args, model, optimizer,
         test_acc, test_loss = test_epoch(args, model, test_loader)
         test_accs.append(test_acc)
         best_test_acc = max(best_test_acc, test_acc)
-        if epoch % 10 == 0:
-            print('Epoch: {:03d}'.format(epoch), 'train_loss: {:.6f}'.format(train_loss),
-                'val_loss: {:.6f}'.format(val_loss), 'val_acc: {:.6f}'.format(val_acc),
-                'test_loss: {:.6f}'.format(test_loss), 'test_acc: {:.6f}'.format(test_acc))
+        print('Epoch: {:03d}'.format(epoch), 'train_loss: {:.6f}'.format(train_loss),
+            'val_loss: {:.6f}'.format(val_loss), 'val_acc: {:.6f}'.format(val_acc),
+            'test_loss: {:.6f}'.format(test_loss), 'test_acc: {:.6f}'.format(test_acc))
+
+        # if epoch % 10 == 0:
+        #     print('Epoch: {:03d}'.format(epoch), 'train_loss: {:.6f}'.format(train_loss),
+        #         'val_loss: {:.6f}'.format(val_loss), 'val_acc: {:.6f}'.format(val_acc),
+        #         'test_loss: {:.6f}'.format(test_loss), 'test_acc: {:.6f}'.format(test_acc))
         #   验证集效果最好的用在测试集上
         if val_acc > best_val_acc:
             best_val_acc = val_acc

@@ -1,0 +1,16 @@
+/home/dongrui/anaconda3/envs/dr/lib/python3.9/site-packages/torch_geometric/data/in_memory_dataset.py:284: UserWarning: It is not recommended to directly access the internal storage format `data` of an 'InMemoryDataset'. If you are absolutely certain what you are doing, access the internal storage via `InMemoryDataset._data` instead to suppress this warning. Alternatively, you can access stacked individual attributes of every graph via `dataset.{attr_name}`.
+  warnings.warn(msg)
+Namespace(device='cuda:2', dataset='PROTEINS', in_size=3, num_classes=2, fusion_type='early', gcn_channels=3, gcn_hidden=128, gcn_layers=4, gcn_dropout=0.1, trans_num_layers=4, input_node_dim=3, hidden_node_dim=32, input_edge_dim=0, hidden_edge_dim=32, ouput_dim=None, n_heads=4, max_in_degree=5, max_out_degree=5, max_path_distance=5, hidden_dim=128, num_layers=4, num_features=3, num_heads=8, dropout=0.1, pos_encoding='gcn', att_dropout=0.1, d_k=64, d_v=64, pos_embed_type='s', alpha=0.4, num_fusion_layers=4, eta=0.5, ffn_dim=256, lam1=0.2, lam2=0.2, theta1=0.1, theta2=0.4, theta3=0.4, loss_log=2, folds=10, lr=0.0001, weight_decay=0.0005, batch_size=128, epoches=800, output_dim=2)
+/home/dongrui/anaconda3/envs/dr/lib/python3.9/site-packages/torch_geometric/data/in_memory_dataset.py:284: UserWarning: It is not recommended to directly access the internal storage format `data` of an 'InMemoryDataset'. The given 'InMemoryDataset' only references a subset of examples of the full dataset, but 'data' will contain information of the full dataset. The data of the dataset is already cached, so any modifications to `data` will not be reflected when accessing its elements. Clearing the cache now by removing all elements in `dataset._data_list`. If you are absolutely certain what you are doing, access the internal storage via `InMemoryDataset._data` instead to suppress this warning. Alternatively, you can access stacked individual attributes of every graph via `dataset.{attr_name}`.
+  warnings.warn(msg)
+Fold: 0
+Epoch: 000 train_loss: 0.020095 val_loss: 1.088404 val_acc: 0.648649 test_loss: 1.737180 test_acc: 0.571429
+Epoch: 001 train_loss: 0.006930 val_loss: 0.645964 val_acc: 0.648649 test_loss: 0.699490 test_acc: 0.535714
+Epoch: 002 train_loss: 0.005541 val_loss: 0.621724 val_acc: 0.648649 test_loss: 0.680986 test_acc: 0.535714
+Epoch: 003 train_loss: 0.005217 val_loss: 0.647762 val_acc: 0.648649 test_loss: 0.771121 test_acc: 0.535714
+Epoch: 004 train_loss: 0.005108 val_loss: 0.621684 val_acc: 0.648649 test_loss: 0.667652 test_acc: 0.535714
+Epoch: 005 train_loss: 0.004986 val_loss: 0.614815 val_acc: 0.648649 test_loss: 0.653069 test_acc: 0.535714
+Epoch: 006 train_loss: 0.004909 val_loss: 0.599633 val_acc: 0.648649 test_loss: 0.624954 test_acc: 0.535714
+Epoch: 007 train_loss: 0.004865 val_loss: 0.598399 val_acc: 0.648649 test_loss: 0.637995 test_acc: 0.535714
+Epoch: 008 train_loss: 0.004835 val_loss: 0.594164 val_acc: 0.648649 test_loss: 0.625019 test_acc: 0.535714
+Epoch: 009 train_loss: 0.004829 val_loss: 0.600985 val_acc: 0.648649 test_loss: 0.626510 test_acc: 0.535714

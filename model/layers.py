@@ -7,7 +7,7 @@ INCLUDING:
 Author: Rui Dong
 Date: 2023-10-10 08:55:26
 LastEditors: Rui Dong
-LastEditTime: 2023-11-03 15:38:46
+LastEditTime: 2023-11-06 21:48:16
 '''
 
 import numpy as np
@@ -318,15 +318,53 @@ class SelfMultiFusionLayer(nn.Module):
 
 
 '''
-    TODO Late fusion, use one transformer layer to FUSION.
+    TODO Later fusion, use one transformer layer to FUSION.
     input:      gcn, trans, fusion
     return:     gcn, trans, fusion(later)
 '''
-class SelfFusionTransformerLayer(nn.TransformerEncoderLayer):
-    def __intit__(self, args):
-        super(SelfFusionTransformerLayer, self).__init__()
-    
+class SelfFusionTransformerLayer(nn.Module):
+    def __init__(self, hidden_dim, num_heads, ffn_dim, dropout=0.1,
+                    activation="relu", batch_norm=False, batch_first=True):
+        super(SelfFusionTransformerLayer, self).__init__() 
 
+        self.hidden_dim = hidden_dim
+        self.num_heads = num_heads
+        self.ffn_dim = ffn_dim
+        self.dropout = dropout
+        
+        self.batch_norm = batch_norm
+        self.batch_first = batch_first
+        
+        self.gcn_fusion_layer = nn.TransformerEncoderLayer(
+            self.hidden_dim, self.num_heads, self.ffn_dim, 
+            dropout=dropout, activation=activation, batch_first=batch_first
+        )
+        self.trans_fusion_layer = nn.TransformerEncoderLayer(
+            self.hidden_dim, self.num_heads, self.ffn_dim, 
+            dropout=dropout, activation=activation, batch_first=batch_first
+        )
+
+    def forward(self, x_gcn, x_trans, x_mix):
+        """ Transformer fusion block before mixup fusion.
+        
+            params:
+                x_gcns, x_trans, x_mix: Tensor.shape == 3, batch * n_max * dim
+        """
+        b_gcn, n_gcn, _ = x_gcn.shape
+        b_trans, n_trans, _ = x_trans.shape
+        b_mix, n_mix, _ = x_mix.shape
+        
+        x_gcn_fusion = torch.cat((x_gcn, x_mix), dim=1)
+        x_trans_fusion = torch.cat((x_trans, x_mix), dim=1)
+        x_gcn_fusion = self.gcn_fusion_layer(x_gcn_fusion)
+        x_trans_fusion = self.trans_fusion_layer(x_trans_fusion)
+        
+        x_gcn_res = x_gcn_fusion[:, :n_gcn, :]
+        x_trans_res = x_trans_fusion[:, :n_trans, :]
+        x_mix_res = ( x_gcn_fusion[:, n_gcn:, :] + x_trans_fusion[:, :n_trans, :] ) / 2.0
+        x_mix_res = ( x_mix_res + x_mix ) / 2.0
+        
+        return x_gcn_res, x_trans_res, x_mix_res
 
 
 '''
@@ -528,6 +566,7 @@ class GraphMixupFusion(nn.Module):
         x_gcn1 = self.gcn_encoder1(x, edge_index)
         x_trans1 = self.trans_encoder1(batch_x, mask=mask, att_bias=adj)
         x_trans1 = x_trans1[mask]
+        #* UPDATE   add fusion transformer block
 
         x_gcn1 = x_gcn1 * self.alpha
         x_trans1 = x_trans1 * (1.00 - self.alpha)

@@ -3,7 +3,7 @@
  * @Author: Rui Dong
  * @Date: 2023-10-25 21:51:49
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-11-06 09:37:53
+ * @LastEditTime: 2023-11-06 18:45:30
 -->
 
 
@@ -43,4 +43,7 @@ $\alpha$ = 0.6
 
 
 `IMDB-BINARY`
-73.60 ± 3.38    73.90 ± 5.11
+73.60 ± 3.38    73.90 ± 5.11\
+75.10 ± 4.81    74.20 ± 4.96
+
+

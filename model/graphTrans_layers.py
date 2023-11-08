@@ -104,6 +104,13 @@ class TransformerEncoder(nn.Module):
         output_ffn = self.ffn(output_att)
         return output_ffn
 
+""" Override transformer block
+"""
+class FusionTransformerEncoderLayer(nn.Module):
+    def __init__(self, args):
+        super().__init__()
+        self.hidden_dim = args.hidden_dim
+
 
 class PositionEncoder(nn.Module):
     '''

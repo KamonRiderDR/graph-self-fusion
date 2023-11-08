@@ -344,6 +344,10 @@ class SelfFusionTransformerLayer(nn.Module):
             dropout=dropout, activation=activation, batch_first=batch_first
         )
 
+    def reset_parameters(self):
+        self.gcn_fusion_layer.reset_parameters()
+        self.trans_fusion_layer.reset_parameters()
+
     def forward(self, x_gcn, x_trans, x_mix):
         """ Transformer fusion block before mixup fusion.
         

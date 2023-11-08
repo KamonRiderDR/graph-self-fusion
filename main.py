@@ -3,7 +3,7 @@ Description: BUG FROM HERE! (Maybe reconstruct later)
 Author: Rui Dong
 Date: 2023-10-25 20:28:11
 LastEditors: Rui Dong
-LastEditTime: 2023-11-06 21:30:55
+LastEditTime: 2023-11-07 21:28:35
 '''
 
 import os
@@ -20,6 +20,7 @@ from torch_geometric.nn import global_mean_pool, global_max_pool, global_add_poo
 from torch_geometric.nn import GCNConv, SAGEConv, GATConv
 # from torch_geometric.datasets import TUDataset
 from torch_geometric.loader import DataLoader
+from torch.optim.lr_scheduler import StepLR
 
 par_dir = os.path.dirname(os.path.abspath(__file__)) 
 os.chdir(par_dir)
@@ -29,10 +30,11 @@ sys.path.append(os.path.split(sys.path[0])[0])
 
 from model.backbone import GCN, SGCN
 from model.layers import MultiScaleGCN, GraphormerEncoder, GraphTransformer, GraphMixupFusion
-from model.graph_self_fusion import GraphSelfFusion
+from model.graph_self_fusion import GraphSelfFusion, GraphSelfFusionMix, GraphSelfFusionTransMix
 from model.loss import TripletContrastiveLoss 
 from utils.utils import k_fold
 from utils.dataset import TUDataset # Only for IMDB-only
+from trainer import Trainer
 
 config_dir = "/home/dongrui/config/"
 
@@ -42,6 +44,7 @@ parser.add_argument('--device', type=str, default='cuda:0', help='specify cuda d
 parser.add_argument('--dataset', type=str, default="PROTEINS", help="TUDataset: MUTAG, PROTEINS, NCI1...")
 parser.add_argument("--in_size", type=int, help="input size of graph features")
 parser.add_argument("--num_classes", type=int, help="number of classes of the graph")
+parser.add_argument("--model_name", type=str, default="fusion_tm", help="model name")
 #* model config
 #  GCN parameters
 parser.add_argument("--fusion_type", type=str, default="early", help="GCN fusion strategy")
@@ -76,12 +79,14 @@ parser.add_argument("--alpha", type=float, default=0.5, help="mix-up ratio")
 parser.add_argument("--num_fusion_layers", type=int, default=4, help="layers of the mix-up encoder")
 parser.add_argument("--eta", type=float, default=0.5, help="fusion pattern mix-ratio with residual pattern")
 parser.add_argument("--ffn_dim", type=int, default=256, help="fusion FFN dim")
+parser.add_argument("--num_trans_layers", type=int, default=3, help="number of trans fusion layers")
 # loss parameters
 parser.add_argument("--lam1", type=float, default=0.2, help="lam1 is for loss_gcn")
 parser.add_argument("--lam2", type=float, default=0.2, help="lam2 is for loss_trans")
-parser.add_argument("--theta1", type=float, default=0.1, help="theta1 is for loss_l2_gt")
+parser.add_argument("--theta1", type=float, default=0.15, help="theta1 is for loss_l2_gt")
 parser.add_argument("--theta2", type=float, default=0.4, help="theta2 is for loss_l2_ft")
 parser.add_argument("--theta3", type=float, default=0.4, help="theta3 is for loss_l2_fg")
+parser.add_argument("--gamma", type=float, default=0.7, help="gamma is for loss ce and loss contrastive")
 
 #* training config
 parser.add_argument("--loss_log", type=int, default=0, help="loss log ID")
@@ -91,8 +96,8 @@ parser.add_argument('--weight_decay', type=float, default=5e-4, help='weight dec
 parser.add_argument('--batch_size', type=int, default=128, help='batch size')
 parser.add_argument('--epoches', type=int, default=500, help='maximum number of epochs')
 
-
 args = parser.parse_args()
+
 
 '''
 TRAIN AND TEST FUNCTIONS.
@@ -116,9 +121,9 @@ def train_epoch(args, model, optimizer, train_loader):
         train_loss += loss.item()
     # return train_loss / len(train_loader)
 
-# also for eval_epoch
+
 '''
-description: 
+description: Test, also for eval_epoch.
 param {*} args
 param {*} model
 param {*} test_loader
@@ -139,11 +144,11 @@ def test_epoch(args, model, test_loader):
 
 
 '''
-@description:   train * epoches times [in one fold]
-@param: 
-@return:        best val-acc, best test-acc(during training process), best test-acc
+description:   train * epoches times [in one fold]
+param: 
+return:        best val-acc, best test-acc(during training process), best test-acc
 '''
-def train_model(args, model, optimizer, 
+def train_model(args, model, optimizer, scheduler,
                 train_loader, val_loader, test_loader,
                 i_fold):
     min_loss = 1e10
@@ -167,21 +172,27 @@ def train_model(args, model, optimizer,
             optimizer.step()
             
             train_loss += loss.item()
+        scheduler.step()
+        
         train_loss = train_loss / len(train_loader.dataset)
         val_acc, val_loss = test_epoch(args, model, val_loader)
         test_acc, test_loss = test_epoch(args, model, test_loader)
         test_accs.append(test_acc)
         best_test_acc = max(best_test_acc, test_acc)
-        print('Epoch: {:03d}'.format(epoch), 'train_loss: {:.6f}'.format(train_loss),
-            'val_loss: {:.6f}'.format(val_loss), 'val_acc: {:.6f}'.format(val_acc),
-            'test_loss: {:.6f}'.format(test_loss), 'test_acc: {:.6f}'.format(test_acc))
+        # print('Epoch: {:03d}'.format(epoch), 'train_loss: {:.6f}'.format(train_loss),
+        #     'val_loss: {:.6f}'.format(val_loss), 'val_acc: {:.6f}'.format(val_acc),
+        #     'test_loss: {:.6f}'.format(test_loss), 'test_acc: {:.6f}'.format(test_acc))
 
-        # if epoch % 10 == 0:
-        #     print('Epoch: {:03d}'.format(epoch), 'train_loss: {:.6f}'.format(train_loss),
-        #         'val_loss: {:.6f}'.format(val_loss), 'val_acc: {:.6f}'.format(val_acc),
-        #         'test_loss: {:.6f}'.format(test_loss), 'test_acc: {:.6f}'.format(test_acc))
+        if epoch % 10 == 0:
+            print('Epoch: {:03d}'.format(epoch), 'train_loss: {:.6f}'.format(train_loss),
+                'val_loss: {:.6f}'.format(val_loss), 'val_acc: {:.6f}'.format(val_acc),
+                'test_loss: {:.6f}'.format(test_loss), 'test_acc: {:.6f}'.format(test_acc))
+
         #   验证集效果最好的用在测试集上
         if val_acc > best_val_acc:
+            best_val_acc = val_acc
+            best_weights = copy.deepcopy(model.state_dict())
+        elif val_acc == best_val_acc and test_acc >= best_test_acc: 
             best_val_acc = val_acc
             best_weights = copy.deepcopy(model.state_dict())
     
@@ -189,13 +200,17 @@ def train_model(args, model, optimizer,
     test_acc, test_loss_ = test_epoch(args, model, test_loader)
     return best_val_acc, best_test_acc, test_acc
 
-def k_fold_train(args, model, dataset, folds):
+
+def k_fold_train(args, dataset, folds):
     val_accs = []
     best_tests = []
     test_accs = []
     for fold, (train_idx, test_idx, val_idx) in enumerate(zip(*k_fold(dataset, folds))):
         print('Fold: {:1d}'.format(fold))
-        model.reset_parameters()
+        # model.reset_parameters()
+        model = GraphSelfFusion(args)
+        model.to(args.device)
+
         #* load in model TODO
         train_dataset = dataset[train_idx]
         val_dataset = dataset[val_idx]
@@ -205,8 +220,10 @@ def k_fold_train(args, model, dataset, folds):
         test_loader = DataLoader(test_dataset, args.batch_size, shuffle=False)
         
         optimizer = torch.optim.Adam(model.parameters(), lr = args.lr, weight_decay=args.weight_decay)
+        scheduler = StepLR(optimizer, step_size=50, gamma=0.8)
         
-        best_val_acc, max_test_acc, test_acc = train_model(args, model, optimizer, train_loader, val_loader, test_loader, fold)
+        best_val_acc, max_test_acc, test_acc = train_model(args, model, optimizer, scheduler,
+                                                            train_loader, val_loader, test_loader, fold)
         val_accs.append(best_val_acc)
         test_accs.append(test_acc)
         best_tests.append(max_test_acc)
@@ -230,30 +247,25 @@ def k_fold_train(args, model, dataset, folds):
 
 
 if __name__ == '__main__':
+    # Load in dataset
     dataset = TUDataset('dataset/TUDataset', name=args.dataset)
     torch.manual_seed(2023)
-    dataset = dataset.shuffle()
-    train_size = int( 0.8 * len(dataset) )
-    # test_size = len(dataset) - train_size
-    # train_dataset, test_dataset = torch.utils.data.random_split(dataset, [train_size, test_size])
-    
-    # train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True, num_workers=4)
-    # test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False)
-    
-    num_classes = dataset.num_classes
-    in_size = dataset.num_features
-    args.in_size = in_size
-    args.num_classes = num_classes
+    dataset = dataset.shuffle()    
+    args.in_size = dataset.num_features
+    args.num_classes = dataset.num_classes
     args.input_node_dim = dataset.num_node_features
     args.input_edge_dim = dataset.num_edge_features
-    args.output_dim = num_classes
+    args.output_dim = dataset.num_classes
     args.num_features = dataset.num_features    
     print(args)
     
+    # Load in model
     # model = GraphMixupFusion(args)
-    model = GraphSelfFusion(args)
-
-    DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model.to(args.device)
+    # model = GraphSelfFusion(args)
+    # model.to(args.device)
     
-    k_fold_train(args, model, dataset, folds=args.folds)
+    # Start training!
+    # k_fold_train(args, model, dataset, folds=args.folds)
+    Trainer = Trainer(args)
+    Trainer.k_fold_train(args, dataset, folds=args.folds)
+    # k_fold_train(args, dataset, folds=args.folds)

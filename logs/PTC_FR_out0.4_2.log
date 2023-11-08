@@ -1,0 +1,22 @@
+Downloading https://www.chrsmrrs.com/graphkerneldatasets/PTC_FR.zip
+Extracting dataset/TUDataset/PTC_FR/PTC_FR.zip
+Processing...
+/home/dongrui/anaconda3/envs/dr/lib/python3.9/site-packages/torch_geometric/data/in_memory_dataset.py:284: UserWarning: It is not recommended to directly access the internal storage format `data` of an 'InMemoryDataset'. If you are absolutely certain what you are doing, access the internal storage via `InMemoryDataset._data` instead to suppress this warning. Alternatively, you can access stacked individual attributes of every graph via `dataset.{attr_name}`.
+  warnings.warn(msg)
+Done!
+Namespace(device='cuda:0', dataset='PTC_FR', in_size=19, num_classes=2, model_name='fusion_tm', fusion_type='early', gcn_channels=3, gcn_hidden=128, gcn_layers=4, gcn_dropout=0.1, trans_num_layers=4, input_node_dim=19, hidden_node_dim=32, input_edge_dim=4, hidden_edge_dim=32, ouput_dim=None, n_heads=4, max_in_degree=5, max_out_degree=5, max_path_distance=5, hidden_dim=128, num_layers=4, num_features=19, num_heads=8, dropout=0.1, pos_encoding='gcn', att_dropout=0.1, d_k=64, d_v=64, pos_embed_type='s', alpha=0.4, num_fusion_layers=6, eta=0.5, ffn_dim=128, num_trans_layers=3, lam1=0.2, lam2=0.2, theta1=0.15, theta2=0.4, theta3=0.4, gamma=0.7, loss_log=2, folds=10, lr=1e-05, weight_decay=5e-05, batch_size=64, epoches=800, output_dim=2)
+/home/dongrui/anaconda3/envs/dr/lib/python3.9/site-packages/torch_geometric/data/in_memory_dataset.py:284: UserWarning: It is not recommended to directly access the internal storage format `data` of an 'InMemoryDataset'. The given 'InMemoryDataset' only references a subset of examples of the full dataset, but 'data' will contain information of the full dataset. The data of the dataset is already cached, so any modifications to `data` will not be reflected when accessing its elements. Clearing the cache now by removing all elements in `dataset._data_list`. If you are absolutely certain what you are doing, access the internal storage via `InMemoryDataset._data` instead to suppress this warning. Alternatively, you can access stacked individual attributes of every graph via `dataset.{attr_name}`.
+  warnings.warn(msg)
+Fold: 0
+Epoch: 000 train_loss: 0.008620 val_loss: 0.510101 val_acc: 0.485714 test_loss: 0.443732 test_acc: 0.666667
+Epoch: 010 train_loss: 0.008051 val_loss: 0.503533 val_acc: 0.514286 test_loss: 0.442726 test_acc: 0.722222
+Epoch: 020 train_loss: 0.008003 val_loss: 0.532362 val_acc: 0.485714 test_loss: 0.415735 test_acc: 0.750000
+Epoch: 030 train_loss: 0.007751 val_loss: 0.524173 val_acc: 0.514286 test_loss: 0.429484 test_acc: 0.750000
+Epoch: 040 train_loss: 0.007831 val_loss: 0.545271 val_acc: 0.571429 test_loss: 0.464778 test_acc: 0.555556
+Epoch: 050 train_loss: 0.007394 val_loss: 0.545103 val_acc: 0.542857 test_loss: 0.435073 test_acc: 0.722222
+Epoch: 060 train_loss: 0.007139 val_loss: 0.538369 val_acc: 0.600000 test_loss: 0.460985 test_acc: 0.555556
+Epoch: 070 train_loss: 0.007074 val_loss: 0.535345 val_acc: 0.600000 test_loss: 0.455331 test_acc: 0.555556
+Epoch: 080 train_loss: 0.007011 val_loss: 0.580067 val_acc: 0.600000 test_loss: 0.465846 test_acc: 0.750000
+Epoch: 090 train_loss: 0.006671 val_loss: 0.573763 val_acc: 0.600000 test_loss: 0.489415 test_acc: 0.694444
+Epoch: 100 train_loss: 0.006666 val_loss: 0.587825 val_acc: 0.657143 test_loss: 0.455812 test_acc: 0.666667
+Epoch: 110 train_loss: 0.006585 val_loss: 0.593014 val_acc: 0.657143 test_loss: 0.439615 test_acc: 0.750000

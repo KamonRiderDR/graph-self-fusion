@@ -2,8 +2,8 @@
 Description: 
 Author: Rui Dong
 Date: 2023-10-27 18:49:02
-LastEditors: Rui Dong
-LastEditTime: 2023-11-01 10:44:35
+LastEditors: Please set LastEditors
+LastEditTime: 2023-11-07 10:52:12
 '''
 import torch
 import torch.nn as nn
@@ -12,6 +12,7 @@ import torch.nn.functional as F
 #TODO
 '''
     classification loss + contrastive loss + combinatorial loss
+    SimCLR?
 '''
 class TripletContrastiveLoss(nn.Module):
     def __init__(self):
@@ -40,5 +41,5 @@ class TripletContrastiveLoss(nn.Module):
         theta3 = args.theta3    # gcn   <-> fusion
         loss_contrastive = dist_fg * theta3 + dist_ft * theta2 - dist_gt * theta1
         
-        return loss_contrastive + loss_classification
+        return loss_contrastive * (1.00-args.gamma) + loss_classification * args.gamma
         

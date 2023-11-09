@@ -2,20 +2,27 @@
  # @Description: 
  # @Author: Rui Dong
  # @Date: 2023-11-03 11:29:53
- # @LastEditors: Rui Dong
- # @LastEditTime: 2023-11-08 14:21:32
+ # @LastEditors: Please set LastEditors
+ # @LastEditTime: 2023-11-09 16:58:08
 ### 
 
-Dataset="PTC_FR"
-alpha=0.4
+Dataset="IMDB-BINARY"
+alpha=0.6
 ALPHA=${alpha}
 
 
 nohup python -u main.py\
     --gcn_hidden 128 --hidden_dim 128 --num_fusion_layers 6 --ffn_dim 128\
     --lr 0.00001 --weight_decay 0.00005  \
-    --batch_size 128 --epoches 800  --device cuda:0 --alpha ${alpha} --dataset ${Dataset}\
-    --loss_log 2 > logs/${Dataset}_out${ALPHA}_1.log  2>&1 &
+    --batch_size 128  --device cuda:1 --alpha ${alpha} --dataset ${Dataset}\
+    --loss_log 2 > logs/${Dataset}_out${ALPHA}_2.log  2>&1 &
+
+# nohup python -u main.py\
+#     --gcn_hidden 128 --hidden_dim 128 --num_fusion_layers 6 --ffn_dim 128\
+#     --lr 0.00001 --weight_decay 0.00005  \
+#     --batch_size 128 --epoches 800  --device cuda:0 --alpha ${alpha} --dataset ${Dataset}\
+#     --loss_log 2 > logs/${Dataset}_out${ALPHA}_2.log  2>&1 &
+
 
 # nohup python -u main.py\
 #     --gcn_hidden 128 --hidden_dim 128 --num_fusion_layers 4 --ffn_dim 128\

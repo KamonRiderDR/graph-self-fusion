@@ -2,8 +2,8 @@
 Description: BUG FROM HERE! (Maybe reconstruct later)
 Author: Rui Dong
 Date: 2023-10-25 20:28:11
-LastEditors: Rui Dong
-LastEditTime: 2023-11-07 21:28:35
+LastEditors: Please set LastEditors
+LastEditTime: 2023-11-09 16:54:46
 '''
 
 import os
@@ -89,12 +89,13 @@ parser.add_argument("--theta3", type=float, default=0.4, help="theta3 is for los
 parser.add_argument("--gamma", type=float, default=0.7, help="gamma is for loss ce and loss contrastive")
 
 #* training config
+parser.add_argument('--patience', type=int, default=500, help='patience for early stopping')
 parser.add_argument("--loss_log", type=int, default=0, help="loss log ID")
 parser.add_argument('--folds', type=int, default=10, help='number of k-folds (default: 10)')
 parser.add_argument('--lr', type=float, default=0.0001, help='learning rate')
 parser.add_argument('--weight_decay', type=float, default=5e-4, help='weight decay')
 parser.add_argument('--batch_size', type=int, default=128, help='batch size')
-parser.add_argument('--epoches', type=int, default=500, help='maximum number of epochs')
+parser.add_argument('--epoches', type=int, default=1000, help='maximum number of epoches')
 
 args = parser.parse_args()
 
@@ -211,7 +212,7 @@ def k_fold_train(args, dataset, folds):
         model = GraphSelfFusion(args)
         model.to(args.device)
 
-        #* load in model TODO
+        #* load in model
         train_dataset = dataset[train_idx]
         val_dataset = dataset[val_idx]
         test_dataset = dataset[test_idx]

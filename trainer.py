@@ -2,8 +2,8 @@
 Description: 
 Author: Rui Dong
 Date: 2023-11-06 11:16:40
-LastEditors: Rui Dong
-LastEditTime: 2023-11-08 11:23:28
+LastEditors: Please set LastEditors
+LastEditTime: 2023-11-09 16:56:22
 '''
 
 import os
@@ -103,6 +103,7 @@ class Trainer:
         best_test_acc = 0.00
         test_accs = []
         criterion = TripletContrastiveLoss()
+        patience = 0
         
         for epoch in range(args.epoches):
             self.model.train()
@@ -123,22 +124,31 @@ class Trainer:
             val_acc, val_loss = self.test_epoch(args, val_loader)
             test_acc, test_loss = self.test_epoch(args, test_loader)
             test_accs.append(test_acc)
-            best_test_acc = max(best_test_acc, test_acc)
+            # best_test_acc = max(best_test_acc, test_acc)
 
             if epoch % 10 == 0:
                 print('Epoch: {:03d}'.format(epoch), 'train_loss: {:.6f}'.format(train_loss),
                     'val_loss: {:.6f}'.format(val_loss), 'val_acc: {:.6f}'.format(val_acc),
                     'test_loss: {:.6f}'.format(test_loss), 'test_acc: {:.6f}'.format(test_acc))
             if test_acc > best_test_acc:
-                best_test_acc = test_acc
+                # best_test_acc = test_acc
                 best_test_weights = copy.deepcopy(self.model.state_dict())
             #   验证集效果最好的用在测试集上
             if val_acc > best_val_acc:
                 best_val_acc = val_acc
                 best_weights = copy.deepcopy(self.model.state_dict())
-            elif val_acc == best_val_acc and test_acc >= best_test_acc: 
+                patience = 0
+            elif val_acc == best_val_acc and test_acc > best_test_acc: 
                 best_val_acc = val_acc
+                best_test_acc = test_acc
                 best_weights = copy.deepcopy(self.model.state_dict())
+                patience = 0
+            else:
+                patience += 1
+            
+            if patience == args.patience:
+                print("Early stop at epoch {:03d}.".format(epoch))
+                break
         
         self.model.load_state_dict(best_weights)
         test_acc, test_loss_ = self.test_epoch(args, test_loader)
@@ -154,7 +164,7 @@ class Trainer:
         param {*} args
         param {*} model
         param {*} test_loader
-        return {*}      ACC && LOSS
+        return {*}      acc && loss
         '''
         self.model.eval()
         correct = 0

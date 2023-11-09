@@ -2,8 +2,8 @@
  * @Description: 
  * @Author: Rui Dong
  * @Date: 2023-10-25 21:51:49
- * @LastEditors: Rui Dong
- * @LastEditTime: 2023-11-08 11:44:08
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-11-09 08:56:20
 -->
 
 
@@ -52,3 +52,13 @@ $\alpha$ = 0.6
 ## Mix-up + transformer fusion
 `POTEINS`
 74.48 ± 3.04
+
+`PTC_FR`
+68.37 ± 4.70\
+67.52 ± 6.00
+
+`NCI1`
+73.16 ± 2.41
+
+`IMDB-BINARY`
+73.30 ± 4.00\

@@ -3,13 +3,14 @@ Description:
 Author: Rui Dong
 Date: 2023-11-06 11:16:40
 LastEditors: Please set LastEditors
-LastEditTime: 2023-11-09 16:56:22
+LastEditTime: 2023-11-09 17:25:08
 '''
 
 import os
 import sys
 os.environ['CUDA_VISIBLE_DEVICES'] = '0,1,2,3'
 
+import time
 import copy
 import argparse
 import numpy as np
@@ -42,12 +43,19 @@ class Trainer:
     """ Description: Trainer is used to execute one training  && evaluating && testing
     process. Include k fold train, eval and train epoch.
     """
-    def __init__(self, args):
+    def __init__(self):
         # self.args = args
+        self.run_times = 5
         self.model = None
         self.scheduler = None
         self.optimizer = None
         # self.criterion = TripletContrastiveLoss()
+        self.val_accs_mean = []
+        self.val_accs_std = []
+        self.test_accs_mean = []
+        self.test_accs_std = []
+        self.best_tests_mean = []
+        self.best_tests_std = []
         
     
     def k_fold_train(self, args, dataset, folds):
@@ -82,8 +90,15 @@ class Trainer:
             torch.cuda.empty_cache()
 
         #* record
+        print(val_accs)
         print(test_accs)
         print(best_tests)
+        self.val_accs_mean.append(np.mean(val_accs) * 100)
+        self.val_accs_std.append(np.std(val_accs) * 100)
+        self.test_accs_mean.append(np.mean(test_accs) * 100)
+        self.test_accs_std.append(np.std(test_accs) * 100)
+        self.best_tests_mean.append(np.mean(best_tests) * 100)
+        self.best_tests_std.append(np.std(best_tests) * 100)
         print(            
             "[{:d} Fold results] data_val:{:.2f} ± {:.2f} data_test:{:.2f} ± {:.2f} best_test:{:.2f} ± {:.2f}".format(
             folds, 
@@ -179,6 +194,22 @@ class Trainer:
         return correct / len(test_loader.dataset), test_loss / len(test_loader.dataset)
     
     
+    def t_times_train(self, args, dataset, folds):
+        for i in range(self.run_times):
+            print("Running {:d} times".format(i))
+            self.k_fold_train(args, dataset, folds)
+        
+        print("======================================================")
+        for i in range(self.run_times):
+            print("Running {:d} times data_val:{:.2f} ± {:.2f} data_test:{:.2f} ± {:.2f} best_test:{:.2f} ± {:.2f}".format(
+                i,
+                self.val_accs_mean[i], self.val_accs_std[i],
+                self.test_accs_mean[i], self.test_accs_std[i],
+                self.best_tests_mean[i], self.best_tests_std[i]
+            ))
+        
+        
+            
     '''
     description:    Test all datasets * k_fold_train 
     param {*} self

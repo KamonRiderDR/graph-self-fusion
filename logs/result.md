@@ -3,7 +3,7 @@
  * @Author: Rui Dong
  * @Date: 2023-10-25 21:51:49
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-11-09 08:56:20
+ * @LastEditTime: 2023-11-09 17:17:07
 -->
 
 
@@ -56,6 +56,7 @@ $\alpha$ = 0.6
 `PTC_FR`
 68.37 ± 4.70\
 67.52 ± 6.00
+68.09 ± 3.10
 
 `NCI1`
 73.16 ± 2.41

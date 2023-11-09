@@ -2,8 +2,8 @@
 Description: 
 Author: Rui Dong
 Date: 2023-10-19 12:25:58
-LastEditors: Rui Dong
-LastEditTime: 2023-10-26 09:55:35
+LastEditors: Please set LastEditors
+LastEditTime: 2023-11-09 17:32:42
 '''
 
 import torch
@@ -41,3 +41,9 @@ def k_fold(dataset, folds):
         train_indices.append(train_mask.nonzero().view(-1))
 
     return train_indices, test_indices, val_indices
+
+def print_time(begin):
+    fin_time = time.time()
+    current_time = time.strftime("%m/%d %H:%M", time.localtime(fin_time))
+    duration = time.strftime("%dd %H:%M:%S", time.gmtime(fin_time - begin))
+    return "[{:s} +{:s}]".format(current_time, duration)

@@ -3,7 +3,7 @@ Description: BUG FROM HERE! (Maybe reconstruct later)
 Author: Rui Dong
 Date: 2023-10-25 20:28:11
 LastEditors: Please set LastEditors
-LastEditTime: 2023-11-09 16:54:46
+LastEditTime: 2023-11-09 17:13:41
 '''
 
 import os
@@ -32,7 +32,7 @@ from model.backbone import GCN, SGCN
 from model.layers import MultiScaleGCN, GraphormerEncoder, GraphTransformer, GraphMixupFusion
 from model.graph_self_fusion import GraphSelfFusion, GraphSelfFusionMix, GraphSelfFusionTransMix
 from model.loss import TripletContrastiveLoss 
-from utils.utils import k_fold
+from utils.utils import k_fold, setup_seed
 from utils.dataset import TUDataset # Only for IMDB-only
 from trainer import Trainer
 
@@ -41,6 +41,7 @@ config_dir = "/home/dongrui/config/"
 parser = argparse.ArgumentParser(description="uni-graph with multimodal self fusion")
 parser.add_argument('--device', type=str, default='cuda:0', help='specify cuda devices')
 #* dataset config
+parser.add_argument('--seed', type=int, default=2023, help='random seed')
 parser.add_argument('--dataset', type=str, default="PROTEINS", help="TUDataset: MUTAG, PROTEINS, NCI1...")
 parser.add_argument("--in_size", type=int, help="input size of graph features")
 parser.add_argument("--num_classes", type=int, help="number of classes of the graph")
@@ -250,7 +251,8 @@ def k_fold_train(args, dataset, folds):
 if __name__ == '__main__':
     # Load in dataset
     dataset = TUDataset('dataset/TUDataset', name=args.dataset)
-    torch.manual_seed(2023)
+    setup_seed(args.seed)
+    # torch.manual_seed(2023)
     dataset = dataset.shuffle()    
     args.in_size = dataset.num_features
     args.num_classes = dataset.num_classes
@@ -267,6 +269,7 @@ if __name__ == '__main__':
     
     # Start training!
     # k_fold_train(args, model, dataset, folds=args.folds)
-    Trainer = Trainer(args)
-    Trainer.k_fold_train(args, dataset, folds=args.folds)
+    Trainer = Trainer()
+    # Trainer.k_fold_train(args, dataset, folds=args.folds)
+    Trainer.t_times_train(args, dataset, folds=args.folds)
     # k_fold_train(args, dataset, folds=args.folds)

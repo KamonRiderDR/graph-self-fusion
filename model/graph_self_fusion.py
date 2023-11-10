@@ -3,7 +3,7 @@ Description:  This is the interface for final model
 Author: Rui Dong
 Date: 2023-10-27 09:46:47
 LastEditors: Rui Dong
-LastEditTime: 2023-11-08 12:11:52
+LastEditTime: 2023-11-09 22:38:13
 '''
 
 import numpy as np
@@ -22,10 +22,11 @@ from torch_geometric.utils import to_dense_batch, to_dense_adj
 from .layers import MultiScaleGCNLayer, SelfMixupFusionLayer, SelfMultiFusionLayer, SelfFusionTransformerLayer
 from .graphormer_layers import GraphormerEncoderLayer, CentralityEncoding, SpatialEncoding
 from .graphTrans_layers import TransformerEncoder, PositionEncoder
+from .MLPMixer_layers import MLPMixer, MixerBlock
 from .functional import shortest_path_distance, batched_shortest_path_distance
 
 
-""" Trans*n1 -> mix*n2
+""" trans*n1 -> mixup*n2
 """
 class GraphSelfFusion(nn.Module):
     def __init__(self, args):
@@ -193,6 +194,67 @@ class GraphSelfFusion(nn.Module):
         return x_gcn, x_trans, x_mix
 
 
+
+""" mixup * n1 -> mixer * n2 
+    [TODO]
+"""
+class GraphSelfFusionMixupMixer(nn.Module):
+    def __init__(self, args):
+        super(GraphSelfFusionMixupMixer, self).__init__()
+        self.args = args
+        #* init parameters
+        self.num_mixup_layers = args.num_fusion_layers
+        # gcn layer parameters
+        self.fusion_type    = args.fusion_type
+        self.gcn_channels   = args.gcn_channels
+        self.num_features   = args.in_size
+        self.hidden_dim     = args.gcn_hidden
+        self.num_classes    = args.num_classes
+        self.dropout        = args.gcn_dropout
+        self.device         = args.device
+        # trans layer parameters
+        self.pos_encoding   = args.pos_encoding
+        self.pos_embedding  = PositionEncoder(self.args,
+                                            self.hidden_dim,
+                                            pos_enc=self.pos_encoding)
+        self.hidden_pos_embedding = PositionEncoder(self.args,
+                                                    self.hidden_dim,
+                                                    pos_enc=self.pos_encoding,
+                                                    embedding_type="m")
+        self.alpha          = args.alpha        # alpha is the ratio between gcn and transformer
+        self.eta            = args.eta          # eta is fusion pattern mix parameters
+        # fusion transformer parameters
+        self.num_heads      = args.num_heads
+        self.ffn_dim        = args.ffn_dim
+        
+        #* init encoder blocks
+        self.gcn_encoder1 = MultiScaleGCNLayer(
+                self.gcn_channels,
+                self.num_features,
+                self.hidden_dim,
+                self.hidden_dim,
+                self.dropout,
+                self.device
+        )
+        self.trans_encoder1 = TransformerEncoder(self.args)
+        self.fusion_transformer_encoder1 = SelfFusionTransformerLayer(
+            self.hidden_dim, self.num_heads, self.ffn_dim, self.dropout 
+        )
+        
+        self.encoders = torch.nn.ModuleList()
+        self.fusion_transformer_layers = nn.ModuleList()
+        for i in range(self.num_mixup_layers-1):
+            alpha_1 = np.random.normal(loc=self.alpha, scale=self.alpha)
+            if alpha_1 >= 1:
+                alpha_1 = self.alpha
+            self.encoders.append(SelfMultiFusionLayer(self.args, position="m"))
+            self.encoders[i].reset_alpha(alpha_1)
+            self.fusion_transformer_layers.append(SelfFusionTransformerLayer(
+                self.hidden_dim, self.num_heads, self.ffn_dim, self.dropout 
+            ))
+
+
+
 """ x_in -> (Trans -> mixup) * n
 """
 class GraphSelfFusionTransMix(nn.Module):
@@ -356,7 +418,7 @@ class GraphSelfFusionTransMix(nn.Module):
 
 
 
-""" The fusion layer only contains mix-up blocks. 
+""" mixup * n 
 """
 class GraphSelfFusionMix(nn.Module):
     def __init__(self, args):

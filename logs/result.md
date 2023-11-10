@@ -2,8 +2,8 @@
  * @Description: 
  * @Author: Rui Dong
  * @Date: 2023-10-25 21:51:49
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-11-09 17:17:07
+ * @LastEditors: Rui Dong
+ * @LastEditTime: 2023-11-10 09:51:52
 -->
 
 
@@ -57,9 +57,12 @@ $\alpha$ = 0.6
 68.37 ± 4.70\
 67.52 ± 6.00
 68.09 ± 3.10
+69.21 ± 6.69
+
 
 `NCI1`
 73.16 ± 2.41
 
 `IMDB-BINARY`
 73.30 ± 4.00\
+74.40 ± 4.15

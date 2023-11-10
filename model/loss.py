@@ -2,8 +2,8 @@
 Description: 
 Author: Rui Dong
 Date: 2023-10-27 18:49:02
-LastEditors: Please set LastEditors
-LastEditTime: 2023-11-07 10:52:12
+LastEditors: Rui Dong
+LastEditTime: 2023-11-10 10:05:30
 '''
 import torch
 import torch.nn as nn
@@ -28,18 +28,21 @@ class TripletContrastiveLoss(nn.Module):
         # is good enough?
         loss_classification = loss_gcn * lam1 + loss_trans * lam2 + loss_fusion * lam3
         
-        z_gcn = F.normalize(out_gcn, dim=1)
-        z_trans = F.normalize(out_trans, dim=1)
-        z_fusion = F.normalize(out_fusion, dim=1)
-        
-        loss2 = torch.nn.MSELoss()
-        dist_gt = loss2(out_gcn, out_trans)
-        dist_ft = loss2(out_fusion, out_trans)
-        dist_fg = loss2(out_fusion, out_gcn)
-        theta1 = args.theta1    # gcn   <-> trans
-        theta2 = args.theta2    # trans <-> fusion
-        theta3 = args.theta3    # gcn   <-> fusion
-        loss_contrastive = dist_fg * theta3 + dist_ft * theta2 - dist_gt * theta1
-        
-        return loss_contrastive * (1.00-args.gamma) + loss_classification * args.gamma
-        
+        if args.loss_type == "ce":
+            return loss_classification
+        elif args.loss_type == "cl":
+            z_gcn = F.normalize(out_gcn, dim=1)
+            z_trans = F.normalize(out_trans, dim=1)
+            z_fusion = F.normalize(out_fusion, dim=1)
+            
+            loss2 = torch.nn.MSELoss()
+            dist_gt = loss2(out_gcn, out_trans)
+            dist_ft = loss2(out_fusion, out_trans)
+            dist_fg = loss2(out_fusion, out_gcn)
+            theta1 = args.theta1    # gcn   <-> trans
+            theta2 = args.theta2    # trans <-> fusion
+            theta3 = args.theta3    # gcn   <-> fusion
+            loss_contrastive = dist_fg * theta3 + dist_ft * theta2 - dist_gt * theta1
+            
+            # return loss_contrastive * (1.00-args.gamma) + loss_classification * args.gamma
+            return loss_classification + loss_contrastive

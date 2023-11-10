@@ -18,3 +18,6 @@ This is the code for self graph fusion.
 - 搭建框架，代码结构优化跑对比实验等 （如果一切顺利的话）
 
 ## Record
+
+
+## Add MLP-Mixer layer

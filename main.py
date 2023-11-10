@@ -2,8 +2,8 @@
 Description: BUG FROM HERE! (Maybe reconstruct later)
 Author: Rui Dong
 Date: 2023-10-25 20:28:11
-LastEditors: Please set LastEditors
-LastEditTime: 2023-11-09 17:13:41
+LastEditors: Rui Dong
+LastEditTime: 2023-11-10 10:06:29
 '''
 
 import os
@@ -82,6 +82,7 @@ parser.add_argument("--eta", type=float, default=0.5, help="fusion pattern mix-r
 parser.add_argument("--ffn_dim", type=int, default=256, help="fusion FFN dim")
 parser.add_argument("--num_trans_layers", type=int, default=3, help="number of trans fusion layers")
 # loss parameters
+parser.add_argument("--loss_type", type=str, default="cl", help="loss function type (ce or cl)")
 parser.add_argument("--lam1", type=float, default=0.2, help="lam1 is for loss_gcn")
 parser.add_argument("--lam2", type=float, default=0.2, help="lam2 is for loss_trans")
 parser.add_argument("--theta1", type=float, default=0.15, help="theta1 is for loss_l2_gt")
